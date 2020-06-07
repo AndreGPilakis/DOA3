@@ -64,7 +64,7 @@ jobs:
       - run:
          name: deploy app
          command: |
-           helm upgrade acme artifacts/acme-0.1.0.tgz -i -n -test --wait --set image=$(cat artifacts/image.txt)
+           helm upgrade acme artifacts/acme-0.1.0.tgz -i -n test --wait --set image=$(cat artifacts/image.txt)
   
           
   integration:
