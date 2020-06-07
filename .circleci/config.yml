@@ -61,6 +61,10 @@ jobs:
             cd artifacts/infra
             make init
             make up
+      - run:
+         name: deploy app
+         command: |
+           helm upgrade acme artifacts/acme.tgz -i -n -test --wait--set image=$(cat artifacts/image.txt)
   
           
   integration:
