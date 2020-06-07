@@ -44,6 +44,25 @@ jobs:
       - store_test_results:
           path: src/test-results
 
+  deploy-test:
+    docker:
+      - image : cimg/base:2020.01
+    environment:
+      ENV: test
+    steps:
+      - attach_workspace:
+          at: ./
+      
+      - setup-cd
+
+      - run:
+          name: deploy infra
+          command: |
+            cd artifacts/infra
+            make init
+            make up
+  
+          
   integration:
     docker:
       - image: circleci/node:lts
@@ -164,16 +183,21 @@ workflows:
   build-test-package:
     jobs:
       - build
-      - integration:
-          requires: 
-            - build
-      - e2e:
-          requires:
-            - build
+      # - integration:
+      #     requires: 
+      #       - build
+      # - e2e:
+      #     requires:
+      #       - build
       - package:
           requires:
-            - e2e
-            - integration
+            - build
+          # requires:
+          #   # - e2e
+          #   - integration
+      - deploy-test:
+          requires:
+            - package
           filters:
             branches:
               only: master
